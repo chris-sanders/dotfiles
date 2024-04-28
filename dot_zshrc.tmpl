@@ -13,10 +13,15 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # Automatically attach to tmux session, or create one if none exists
+#if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+#  # Attempt to attach to existing session
+#  tmux attach -t default || tmux new -s default
+#fi
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-  # Attempt to attach to existing session
-  tmux attach -t default || tmux new -s default
+  tmux
+  exit
 fi
+
 
 # Use nvim
 alias vim=nvim
@@ -32,12 +37,6 @@ export PROMPT="╭$PROMPT
 
 # Disable auto title renaming in tmux
 DISABLE_AUTO_TITLE=true
-
-# TODO: Remove it not missed
-#if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-#  tmux
-#  exit
-#fi
 
 # Use aliases with watch
 alias watch="watch "
