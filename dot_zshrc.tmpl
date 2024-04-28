@@ -1,0 +1,20 @@
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Which plugins would you like to load?
+plugins=(
+	git
+	ssh-agent
+	git-prompt
+	kubectl
+	fzf
+	)
+
+source $ZSH/oh-my-zsh.sh
+
+# Automatically attach to tmux session, or create one if none exists
+if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+  # Attempt to attach to existing session
+  tmux attach -t default || tmux new -s default
+fi
+
