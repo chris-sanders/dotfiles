@@ -1,0 +1,47 @@
+{
+  // Important, otherwise link completion containing spaces and other special characters won't work.
+  "suggest.invalidInsertCharacters": [],
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextCurrentLineOnly": true,
+  "go.goplsOptions": {
+    "formatting.gofumpt": true
+  },
+  //"go.goplsArgs": [
+  //  "-logfile=/tmp/gopls.log",
+  //  "-vv"
+  //],
+  "yaml.format.enable": true,
+  "languageserver": {
+    "zk": {
+      "command": "zk",
+      "args": [
+        "lsp"
+      ],
+      //"args": ["lsp", "--log", "~/tmp/zk.log"],
+      "trace.server": "messages",
+      "filetypes": [
+        "markdown",
+        "pandoc"
+      ]
+    }
+  },
+  "python.formatting.provider": "black",
+  "python.analysis.typeCheckingMode": "off",
+  //"python.formatting.blackPath": "",
+  "markdownlint.config": {
+    "default": true,
+    "line_length": false,
+    "MD018": false
+  },
+  "snippets.ultisnips.directories": [
+    "UltiSnips",
+    "$PWD/.vim/snips"
+  ],
+  "cSpell.userWords": [
+    "Authz",
+    "Kubernetes",
+    "Nodeport",
+    "Velero",
+    "kubectl"
+  ]
+}
