@@ -43,5 +43,6 @@
     "Nodeport",
     "Velero",
     "kubectl"
-  ]
+  ],
+  "snippets.ultisnips.pythonPrompt": false
 }
