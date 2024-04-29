@@ -1,0 +1,101 @@
+# Terminal colors (recommend by deopelete)
+set -g default-terminal "tmux-256color"
+set-option -g default-terminal "screen-256color"
+
+# copy to system clipboard
+# For SWAY
+bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "wl-copy"
+bind-key -T prefix p run "wl-paste | tmux load-buffer - ; tmux paste-buffer"
+# bind-key -n C-v paste-buffer # Disabled b/c it conflicts with vim
+
+# use vim style selection and block selection
+unbind-key -T copy-mode-vi 'v'
+bind-key -T copy-mode-vi 'v' send -X begin-selection
+
+# easy-to-remember split pane commands
+bind | split-window -h
+bind - split-window -v
+unbind '"'
+unbind %
+
+# moving between panes with vim movement keys
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# moving between windows with vim movement keys
+bind -r C-h select-window -t :-
+bind -r C-l select-window -t :+
+
+# move windows with vim keys
+# This seems to prevent the window update for some reason
+# bind -r C-H swap-window -t -1
+# bind -r C-L swap-window -t +1
+
+# move panes with vim keys
+unbind L  # Default switch-client -L
+bind H swap-pane -s "left-of"
+bind J swap-pane -s "down-of"
+bind K swap-pane -s "up-of"
+bind L swap-pane -s "right-of"
+
+# Set the base index for windows to 1 instead of 0
+set -g base-index 1
+
+# Set the base index for panes to 1 instead of 0
+setw -g pane-base-index 1
+
+# Lower escape time for no lag in vim
+set -g escape-time 10
+
+{{- if env "SSH_CONNECTION" }}
+# Setting the prefix from C-b to C-a
+set -g prefix C-a
+unbind C-b
+ 
+# use C-b for remote sessions
+bind-key -n C-b send-keys C-b
+{{- end }}
+ 
+# Reload the file with Prefix r
+bind r source-file ~/.tmux.conf \; display "Reloaded!"
+
+# Enable mouse mode
+set-option -g mouse on
+
+
+#### COLOUR (Solarized 256)
+# default statusbar colors
+set-option -g status-style fg=colour136,bg=colour235 #yellow and base02
+
+# default window title colors
+set-window-option -g window-status-style fg=colour244,bg=default #base0 and default
+
+# active window title colors
+set-window-option -g window-status-current-style fg=colour166,bg=default #orange and default
+
+# pane border
+set-option -g pane-border-style fg=colour235 #base02
+{{- if env "SSH_CONNECTION" }}
+set-option -g pane-active-border-style fg=colour160 #Red for remote
+{{- else }}
+set-option -g pane-active-border-style fg=colour75 #local
+{{- end }}
+
+# message text
+set-option -g message-style fg=colour166,bg=colour235 #orange and base02
+
+# pane number display
+set-option -g display-panes-active-colour colour33 #blue
+{{- if env "SSH_CONNECTION" }}
+set-option -g display-panes-colour colour160 #remote red
+{{- else }}
+set-option -g display-panes-colour colour166 #local orange
+{{- end }}
+
+# clock
+set-window-option -g clock-mode-colour colour64 #green
+
+# bell
+set-window-option -g window-status-bell-style fg=colour235,bg=colour160 #base02, red
