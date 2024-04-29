@@ -49,7 +49,7 @@ setw -g pane-base-index 1
 # Lower escape time for no lag in vim
 set -g escape-time 10
 
-{{- if env "SSH_CONNECTION" }}
+{{- if not (env "SSH_CONNECTION") }}
 # Setting the prefix from C-b to C-a
 set -g prefix C-a
 unbind C-b
@@ -64,7 +64,6 @@ bind r source-file ~/.tmux.conf \; display "Reloaded!"
 # Enable mouse mode
 set-option -g mouse on
 
-
 #### COLOUR (Solarized 256)
 # default statusbar colors
 set-option -g status-style fg=colour136,bg=colour235 #yellow and base02
@@ -73,18 +72,23 @@ set-option -g status-style fg=colour136,bg=colour235 #yellow and base02
 set-window-option -g window-status-style fg=colour244,bg=default #base0 and default
 
 # active window title colors
-set-window-option -g window-status-current-style fg=colour166,bg=default #orange and default
+{{- if env "SSH_CONNECTION" }}
+set-window-option -g window-status-current-style fg=colour160,bg=default #remote red and default
+{{- else }}
+set-window-option -g window-status-current-style fg=colour166,bg=default #local orange and default
+{{- end }}
 
 # pane border
 set-option -g pane-border-style fg=colour235 #base02
-{{- if env "SSH_CONNECTION" }}
 set-option -g pane-active-border-style fg=colour160 #Red for remote
-{{- else }}
 set-option -g pane-active-border-style fg=colour75 #local
-{{- end }}
 
 # message text
-set-option -g message-style fg=colour166,bg=colour235 #orange and base02
+{{- if env "SSH_CONNECTION" }}
+set-option -g message-style fg=colour160,bg=colour235 #remote red and base02
+{{- else }}
+set-option -g message-style fg=colour166,bg=colour235 #local orange and base02
+{{- end }}
 
 # pane number display
 set-option -g display-panes-active-colour colour33 #blue
