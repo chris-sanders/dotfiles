@@ -1,16 +1,9 @@
-## Path to your oh-my-zsh installation.
-#export ZSH="$HOME/.oh-my-zsh"
-#
-## Which plugins would you like to load?
-#plugins=(
-#	git
-#	ssh-agent
-#	git-prompt
-#	kubectl
-#	fzf
-#	)
-#
-#source $ZSH/oh-my-zsh.sh
+# aliases
+alias watch="watch "
+alias vim=nvim
+
+# Use nvim
+export EDITOR=nvim
 
 # Setup antidote
 export ZDOTDIR=~/.config/zsh
@@ -20,31 +13,11 @@ antidote load ${ZDOTDIR}/zsh_plugins.txt
 # Use starship prompt
 prompt starship
 
-# Automatically attach to tmux session, or create one if none exists
-#if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-#  # Attempt to attach to existing session
-#  tmux attach -t default || tmux new -s default
-#fi
+# Create tmux by default
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
   tmux
   exit
 fi
 
-
-# Use nvim
-alias vim=nvim
-export EDITOR=nvim
-
-# Color please
-#export CLICOLOR=1
-
-# Prompt
-#export PROMPT='%F{green}%n:%F{blue}%~%f %% '
-#export PROMPT="╭$PROMPT
-#╰➤ "
-
 # Disable auto title renaming in tmux
 DISABLE_AUTO_TITLE=true
-
-# Use aliases with watch
-alias watch="watch "
