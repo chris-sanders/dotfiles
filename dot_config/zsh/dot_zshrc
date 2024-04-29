@@ -6,7 +6,7 @@ alias vim=nvim
 export EDITOR=nvim
 
 # Setup antidote
-export ZDOTDIR=~/.config/zsh
+#export ZDOTDIR=~/.config/zsh
 source ${ZDOTDIR}/antidote/antidote.zsh
 antidote load ${ZDOTDIR}/zsh_plugins.txt
 
@@ -21,3 +21,5 @@ fi
 
 # Disable auto title renaming in tmux
 DISABLE_AUTO_TITLE=true
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
