@@ -1,0 +1,5 @@
+{{- if stat (joinPath .chezmoi.homeDir "ansible") -}}
+export VIRTUAL_ENV=./venvs/ansible-2.16-venv
+source $VIRTUAL_ENV/bin/activate
+unset PS1
+{{- end }}

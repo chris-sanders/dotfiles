@@ -23,3 +23,7 @@ fi
 DISABLE_AUTO_TITLE=true
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Enable direnv
+eval "$(direnv hook zsh)"
+export DIRENV_LOG_FORMAT=""
