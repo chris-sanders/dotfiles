@@ -1,0 +1,4 @@
+{{- if not (stat (joinPath .chezmoi.homeDir "ansible")) }}
+ansible/
+ansible/.envrc
+{{- end }}
