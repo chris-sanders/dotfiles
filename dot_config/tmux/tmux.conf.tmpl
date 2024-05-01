@@ -3,14 +3,24 @@ set -g default-terminal "tmux-256color"
 set-option -g default-terminal "screen-256color"
 
 # copy to system clipboard
-# For SWAY
+{{- if eq .chezmoi.os "linux" }}
+  {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+# WSL
+bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "/mnt/c/Windows/System32/clip.exe"
+  {{- else }}
+# Need to validate if these are necessary and on which distro
 bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "wl-copy"
 bind-key -T prefix p run "wl-paste | tmux load-buffer - ; tmux paste-buffer"
-# bind-key -n C-v paste-buffer # Disabled b/c it conflicts with vim
+  {{- end }}
+{{- end }}
+# bind-key -n C-v paste-buffer # Don't do this b/c it conflicts with vim
 
 # use vim style selection and block selection
 unbind-key -T copy-mode-vi 'v'
 bind-key -T copy-mode-vi 'v' send -X begin-selection
+
+# Set Vim keybindings for copy mode
+setw -g mode-keys vi
 
 # easy-to-remember split pane commands
 bind | split-window -h
