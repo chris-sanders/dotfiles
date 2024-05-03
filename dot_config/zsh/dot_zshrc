@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # aliases
 alias watch="watch "
 alias vim=nvim
@@ -11,12 +18,11 @@ source ${ZDOTDIR}/antidote/antidote.zsh
 antidote load ${ZDOTDIR}/zsh_plugins.txt
 
 # Use starship prompt
-prompt starship
+#prompt starship
 
 # Create tmux by default
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
   tmux
-  exit
 fi
 
 # Disable auto title renaming in tmux
@@ -27,3 +33,6 @@ DISABLE_AUTO_TITLE=true
 # Enable direnv
 eval "$(direnv hook zsh)"
 export DIRENV_LOG_FORMAT=""
+
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

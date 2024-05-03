@@ -20,3 +20,6 @@ unixorn/fzf-zsh-plugin
 
 # fzf completions
 Aloxaf/fzf-tab
+
+# powerlevel10k
+romkatv/powerlevel10k
