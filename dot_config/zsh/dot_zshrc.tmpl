@@ -36,3 +36,9 @@ export DIRENV_LOG_FORMAT=""
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+
+{{ if eq .chezmoi.os "darwin" }}
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ end }}
+
