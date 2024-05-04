@@ -1,3 +1,19 @@
+# Create tmux by default
+#echo "Checking TMUX variable: $TMUX"
+if [[ $- == *i* ]] && [ -z "$TMUX" ]; then
+  #echo "TMUX env var is empty - not inside tmux."
+  session=$(tmux list-sessions -F "#{session_attached} #{session_name}" 2>/dev/null | grep "^0" | cut -d " " -f2 | head -n 1)
+  if [ -n "$session" ]; then
+    #echo "Detached session found: $session"
+    tmux attach-session -t "$session" 2>/dev/null
+  else
+    #echo "No detached sessions, starting a new one."
+    tmux new-session 2>/dev/null
+  fi
+#else
+  #echo "Already inside tmux: $TMUX, not re-launching"
+fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -13,17 +29,8 @@ alias vim=nvim
 export EDITOR=nvim
 
 # Setup antidote
-#export ZDOTDIR=~/.config/zsh
 source ${ZDOTDIR}/antidote/antidote.zsh
 antidote load ${ZDOTDIR}/zsh_plugins.txt
-
-# Use starship prompt
-#prompt starship
-
-# Create tmux by default
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-  tmux
-fi
 
 # Disable auto title renaming in tmux
 DISABLE_AUTO_TITLE=true
