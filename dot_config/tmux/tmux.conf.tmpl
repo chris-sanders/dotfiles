@@ -39,16 +39,19 @@ bind -r C-h select-window -t :-
 bind -r C-l select-window -t :+
 
 # move windows with vim keys
-# This seems to prevent the window update for some reason
-# bind -r C-H swap-window -t -1
-# bind -r C-L swap-window -t +1
+bind -r M-h swap-window -t -1 \; select-window -t -1
+bind -r M-l swap-window -t +1 \; select-window -t +1
 
 # move panes with vim keys
 unbind L  # Default switch-client -L
-bind H swap-pane -s "left-of"
-bind J swap-pane -s "down-of"
-bind K swap-pane -s "up-of"
-bind L swap-pane -s "right-of"
+# Just use { and } which are defaults?
+#bind H move-pane -L
+#bind J move-pane -D
+#bind K move-pane -U
+#bind L move-pane -R
+
+# Join pane with @ (break pane is ! by default)
+bind @ command-prompt -p "create pane from:"  "join-pane -s ':%%'"
 
 # Set the base index for windows to 1 instead of 0
 set -g base-index 1
@@ -69,10 +72,15 @@ bind-key -n C-b send-keys C-b
 {{- end }}
  
 # Reload the file with Prefix r
-bind r source-file ~/.tmux.conf \; display "Reloaded!"
+bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
 
 # Enable mouse mode
 set-option -g mouse on
+
+# Better window names
+set-option -g status-interval 5
+set-option -g automatic-rename on
+set-option -g automatic-rename-format "#{?#{==:#{pane_current_command},zsh},#{b:pane_current_path},#{pane_current_command}}"
 
 #### COLOUR (Solarized 256)
 # default statusbar colors
