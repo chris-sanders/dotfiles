@@ -5,3 +5,5 @@
 	rebase = true
 [core]
 	editor = nvim
+[pager]
+	branch = false
