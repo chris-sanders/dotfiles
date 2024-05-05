@@ -64,7 +64,7 @@ set -g escape-time 10
 
 # Setting the prefix from C-b to C-a
 set -g prefix C-a
-set -gu @prefix-mode 'a'
+set -g @prefix-mode 'a'
 unbind C-b
  
 # use C-b for remote sessions
@@ -73,11 +73,11 @@ bind-key -n C-b send-keys C-b
 # Set T to swap local prefix so C-a can be sent remotely
 bind T \
   if-shell -F "#{==:#{prefix},C-a}" \
-    "set -g prefix C-b; set -gu @prefix-mode 'b'; bind-key -n C-b send-prefix; unbind-key -n C-a; bind-key -n C-a send-keys C-a" \
-    "set -g prefix C-a; set -gu @prefix-mode 'a'; bind-key -n C-a send-prefix; unbind-key -n C-b; bind-key -n C-b send-keys C-b"
+    "set -g prefix C-b; set -g @prefix-mode 'b'; bind-key -n C-b send-prefix; unbind-key -n C-a; bind-key -n C-a send-keys C-a" \
+    "set -g prefix C-a; set -g @prefix-mode 'a'; bind-key -n C-a send-prefix; unbind-key -n C-b; bind-key -n C-b send-keys C-b"
 
 # Disaply active prefix on left
-set -g status-left "Prefix: #[fg=green]#{?@prefix-mode,#{@prefix-mode},Unknown} | "
+set -g status-left "#{?@prefix-mode,#{@prefix-mode},Unknown}:"
 set -g status-left-length 50
  
 # Reload the file with Prefix r
