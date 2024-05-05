@@ -1,0 +1,7 @@
+[user]
+	email = sanders.chris@gmail.com
+	name = Chris Sanders
+[pull]
+	rebase = true
+[core]
+	editor = nvim
