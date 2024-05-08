@@ -1,7 +1,7 @@
 # Zephyr defaults
 mattmc3/zephyr path:plugins/color
 mattmc3/zephyr path:plugins/completion
-#mattmc3/zephyr path:plugins/confd
+mattmc3/zephyr path:plugins/confd
 mattmc3/zephyr path:plugins/directory
 mattmc3/zephyr path:plugins/editor
 mattmc3/zephyr path:plugins/environment

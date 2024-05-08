@@ -1,17 +1,25 @@
+# Setup antidote
+source ${ZDOTDIR}/antidote/antidote.zsh
+antidote load ${ZDOTDIR}/zsh_plugins.txt
+
 # Create tmux by default
-#echo "Checking TMUX variable: $TMUX"
+echo "Checking TMUX variable: $TMUX"
 if [[ $- == *i* ]] && [ -z "$TMUX" ]; then
-  #echo "TMUX env var is empty - not inside tmux."
-  session=$(tmux list-sessions -F "#{session_attached} #{session_name}" 2>/dev/null | grep "^0" | cut -d " " -f2 | head -n 1)
+  echo "TMUX env var is empty - not inside tmux."
+  session= $(tmux list-sessions -F "#{session_attached} #{session_name}" 2>/dev/null | grep "^0" | cut -d " " -f2 | head -n 1)
   if [ -n "$session" ]; then
-    #echo "Detached session found: $session"
+    echo "Detached session found: $session"
     tmux attach-session -t "$session" 2>/dev/null
   else
-    #echo "No detached sessions, starting a new one."
-    tmux new-session 2>/dev/null
+    echo "No detached sessions, starting a new one."
+    while [[ ! -t 1 ]]; do
+        echo "Terminal init on tty: $(tty), interactive: $-, fd1: $(test -t 1 && echo 'yes' || echo 'no'), at $(date)"
+        sleep 0.1
+    done
+    tmux -vv new-session # 2>/dev/null
   fi
-#else
-  #echo "Already inside tmux: $TMUX, not re-launching"
+else
+  echo "Already inside tmux: $TMUX, not re-launching"
 fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
@@ -28,10 +36,7 @@ alias vim=nvim
 # Use nvim
 export EDITOR=nvim
 
-# Setup antidote
-source ${ZDOTDIR}/antidote/antidote.zsh
-antidote load ${ZDOTDIR}/zsh_plugins.txt
-
+# Auto-created fzf completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Enable direnv
@@ -40,9 +45,3 @@ export DIRENV_LOG_FORMAT=""
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
-
-{{ if eq .chezmoi.os "darwin" }}
-# Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
-{{ end }}
-
