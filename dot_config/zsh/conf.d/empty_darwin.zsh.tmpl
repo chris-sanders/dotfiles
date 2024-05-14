@@ -5,13 +5,13 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # Alias sbctl
 alias sbc="sbctl shell --token=$VPTOKEN --support-bundle-location $1"
 
-#add_to_path_once() {
-#    if [[ ":$PATH:" != *":$1:"* ]]; then
-#        export PATH="$1:$PATH"
-#    fi
-#}
-#
-## Add go to path
-#add_to_path_once "/usr/local/go/bin"
+add_to_path_once() {
+    if [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$1:$PATH"
+    fi
+}
+
+# Add go to path
+add_to_path_once "/Users/chris/go/bin"
 
 {{- end }}
