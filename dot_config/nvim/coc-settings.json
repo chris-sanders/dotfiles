@@ -6,11 +6,10 @@
   "go.goplsOptions": {
     "formatting.gofumpt": true
   },
-  //"go.goplsArgs": [
-  //  "-logfile=/tmp/gopls.log",
-  //  "-vv"
-  //],
   "yaml.format.enable": true,
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json": ["/*.yml", "/*.yaml"]
+  },
   "languageserver": {
     "zk": {
       "command": "zk",
@@ -27,7 +26,6 @@
   },
   "python.formatting.provider": "black",
   "python.analysis.typeCheckingMode": "off",
-  //"python.formatting.blackPath": "",
   "markdownlint.config": {
     "default": true,
     "line_length": false,
