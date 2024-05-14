@@ -1,5 +1,0 @@
-format = '$directory$all'
-
-[directory]
-truncate_to_repo = false
-
