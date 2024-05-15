@@ -1,17 +1,20 @@
-# Terminal colors (recommend by deopelete)
+# Terminal colors
 set -g default-terminal "xterm-256color"
 
-# copy to system clipboard
+
+# Copy to system clipboard
 {{- if eq .chezmoi.os "linux" }}
   {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 # WSL
 bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "/mnt/c/Windows/System32/clip.exe"
   {{- else }}
-# Need to validate if these are necessary and on which distro
-bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "wl-copy"
-bind-key -T prefix p run "wl-paste | tmux load-buffer - ; tmux paste-buffer"
+# Remote Linux (non-WSL)
+bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard"
   {{- end }}
 {{- end }}
+
+# Paste from clipboard (for remote)
+bind-key -T prefix p run-shell "xclip -o -selection clipboard | tmux load-buffer - ; tmux paste-buffer"
 # bind-key -n C-v paste-buffer # Don't do this b/c it conflicts with vim
 
 # use vim style selection and block selection
