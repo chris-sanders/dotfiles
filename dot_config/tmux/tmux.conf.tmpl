@@ -24,6 +24,11 @@ bind-key -T copy-mode-vi 'v' send -X begin-selection
 # Set Vim keybindings for copy mode
 setw -g mode-keys vi
 
+{{- if env "SSH_CONNECTION" }}
+# Remote macahines don't process mouse higlights so local machine can
+unbind -n MuseDragEnd1Paneo
+{{- end }}
+
 # easy-to-remember split pane commands
 bind | split-window -h
 bind - split-window -v
