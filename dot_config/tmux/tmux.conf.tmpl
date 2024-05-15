@@ -28,7 +28,7 @@ set-option -g mouse on
 
 {{- if env "SSH_CONNECTION" }}
 # Remote macahines don't process mouse higlights so local machine can
-unbind -n MuseDragEnd1Paneo
+set-option -g mouse off
 {{- end }}
 
 # easy-to-remember split pane commands
