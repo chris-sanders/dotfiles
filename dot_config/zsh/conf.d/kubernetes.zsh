@@ -11,7 +11,7 @@ if command -v kubectl > /dev/null 2>&1; then
 fi
 
 # Directory containing kubeconfig files
-KUBECONFIG_DIR=~/.config/kube/configs.d/
+KUBECONFIG_DIR=~/.config/kube/conf.d/
 
 # Check if kubeconfig directory exists
 if [[ -d "$KUBECONFIG_DIR" ]]; then
