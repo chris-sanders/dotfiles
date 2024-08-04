@@ -1,0 +1,12 @@
+{{- if eq .chezmoi.osRelease.id "ubuntu" }}
+# Add /snap/bin to PATH
+add_to_path_once() {
+    if [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$1:$PATH"
+    fi
+}
+
+# Add /snap/bin to path
+add_to_path_once "/snap/bin"
+
+{{- end }}
