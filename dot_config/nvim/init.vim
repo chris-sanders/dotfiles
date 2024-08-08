@@ -40,6 +40,9 @@ Plug 'liuchengxu/vista.vim'
 " Copilot
 Plug 'github/copilot.vim'
 
+" Helm filetypes
+Plug 'towolf/vim-helm'
+
 call plug#end()
 " Done with plugins
 
@@ -87,6 +90,7 @@ autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 
 " Coc
 let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-tsserver', 'coc-sh', 'coc-yaml', 'coc-snippets', 'coc-markdownlint', 'coc-marketplace', 'coc-spell-checker', 'coc-go', 'coc-pyright']
+" autocmd BufRead,BufNewFile */templates/*.yaml set filetype=helm
 
 " Tabs
 set tabstop=4

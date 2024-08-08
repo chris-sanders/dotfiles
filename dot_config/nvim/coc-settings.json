@@ -7,8 +7,9 @@
     "formatting.gofumpt": true
   },
   "yaml.format.enable": true,
+  "yaml.schemaStore.enable": true,
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json": ["/*.yml", "/*.yaml"]
+    "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json": ["**/playbooks/*.yml", "**/roles/**/*.yml"]
   },
   "languageserver": {
     "zk": {
@@ -22,6 +23,12 @@
         "markdown",
         "pandoc"
       ]
+    },
+    "helm": {
+      "command": "helm_ls",
+      "args": ["serve"],
+      "filetypes": ["helm", "helmfile"],
+      "rootPatterns": ["Chart.yaml"]
     }
   },
   "python.formatting.provider": "black",
