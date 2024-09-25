@@ -31,6 +31,7 @@ alias vim=nvim
 
 # Use nvim
 export EDITOR=nvim
+export VISUAL=nvim
 
 # Auto-created fzf completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
