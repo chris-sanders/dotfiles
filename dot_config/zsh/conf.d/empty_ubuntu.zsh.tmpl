@@ -1,4 +1,4 @@
-{{- if eq .chezmoi.osRelease.id "ubuntu" }}
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
 # Add /snap/bin to PATH
 add_to_path_once() {
     if [[ ":$PATH:" != *":$1:"* ]]; then
