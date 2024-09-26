@@ -2,7 +2,12 @@
 set -g default-terminal "screen-256color"
 
 # Copy to system clipboard
-{{- if eq .chezmoi.os "linux" }}
+{{- if eq .chezmoi.os "darwin" }}
+# macOS
+set -g set-clipboard on
+bind-key -T copy-mode-vi 'y' send -X copy-pipe-and-cancel "pbcopy"
+bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "pbcopy"
+{{- else if eq .chezmoi.os "linux" }}
   {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 # WSL
 bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "/mnt/c/Windows/System32/clip.exe"
@@ -12,9 +17,13 @@ bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -selection c
   {{- end }}
 {{- end }}
 
-# Paste from clipboard (for remote)
+# Paste from clipboard
+{{- if eq .chezmoi.os "darwin" }}
+# macOS (no special binding needed, Command+V works)
+{{- else if eq .chezmoi.os "linux" }}
+# Linux (including WSL)
 bind-key -T prefix p run-shell "xclip -o -selection clipboard | tmux load-buffer - ; tmux paste-buffer"
-# bind-key -n C-v paste-buffer # Don't do this b/c it conflicts with vim
+{{- end }}
 
 # use vim style selection and block selection
 unbind-key -T copy-mode-vi 'v'
