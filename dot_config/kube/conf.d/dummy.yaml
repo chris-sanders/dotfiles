@@ -1,0 +1,10 @@
+eapiVersion: v1
+clusters:
+- cluster:
+  name: dummy
+contexts:
+- context:
+    cluster: dummy
+  name: dummy
+kind: Config
+preferences: {}
