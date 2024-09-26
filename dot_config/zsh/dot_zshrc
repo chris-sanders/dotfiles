@@ -6,7 +6,7 @@ antidote load ${ZDOTDIR}/zsh_plugins.txt
 #echo "Checking TMUX variable: $TMUX"
 if [[ $- == *i* ]] && [ -z "$TMUX" ]; then
   #echo "TMUX env var is empty - not inside tmux."
-  session= $(tmux list-sessions -F "#{session_attached} #{session_name}" 2>/dev/null | grep "^0" | cut -d " " -f2 | head -n 1)
+  session=$(tmux list-sessions -F "#{session_attached} #{session_name}" 2>/dev/null | grep "^0" | cut -d " " -f2 | head -n 1)
   if [ -n "$session" ]; then
     #echo "Detached session found: $session"
     tmux attach-session -t "$session" 2>/dev/null
