@@ -46,6 +46,15 @@ Plug 'towolf/vim-helm'
 call plug#end()
 " Done with plugins
 
+" Enable syntax highlighting
+syntax on
+
+" Set up autocmd to apply colorscheme after plugins load
+augroup ColorSchemeLoader
+  autocmd!
+  autocmd VimEnter * colorscheme PaperColor
+augroup END
+
 " Use vim-pandoc-syntax with markdown files
 augroup pandoc_syntax
     au! BufNewFile,BufFilePre,BufRead *.md set filetype=pandoc
@@ -73,6 +82,7 @@ let g:PaperColor_Theme_Options = {
   \   }
   \ }
 colorscheme PaperColor
+
 " coc status in lightline
 let g:lightline = {
       \ 'colorscheme': 'wombat',
@@ -116,7 +126,8 @@ hi CocMenuSel ctermbg=109 guibg=#13354A
 " nnoremap <C-n> :NERDTreeMirror<CR>:NERDTreeFocus<CR>
 
 " coc-pyright
-"let g:python3_host_prog="/opt/homebrew/bin/python3"
+" MacOS location
+let g:python3_host_prog = "/Users/chris/Library/Caches/pypoetry/virtualenvs/venv-FLagT_ML-py3.13"
 
 "zk
 command! -nargs=0 ZkIndex :call CocAction("runCommand", "zk.index", expand("%:p"))
