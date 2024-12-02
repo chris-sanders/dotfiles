@@ -1,7 +1,6 @@
 # Powerlevel10k customization to show Kubernetes context
 typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl'
 POWERLEVEL9K_KUBECONTEXT_CONTENT_EXPANSION='${KUBE_CONTEXT}'
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(kubecontext)
 
 # Add kubectl completions and alias
 if command -v kubectl > /dev/null 2>&1; then
