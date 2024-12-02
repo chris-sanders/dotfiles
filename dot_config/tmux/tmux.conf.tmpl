@@ -5,8 +5,13 @@ set -g default-terminal "tmux-256color"
 
 # Copy to system clipboard
 set -g set-clipboard on
+{{- if eq .chezmoi.os "linux" }}
+bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "xclip -selection clipboard"
+bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "xclip -selection clipboard"
+{{- else }}
 bind-key -T copy-mode-vi y send -X copy-selection-and-cancel
 bind-key -T copy-mode-vi Enter send -X copy-selection-and-cancel
+{{- end }}
 
 # use vim style selection and block selection
 unbind-key -T copy-mode-vi 'v'
