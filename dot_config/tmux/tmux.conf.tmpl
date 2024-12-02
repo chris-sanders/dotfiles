@@ -1,34 +1,12 @@
 # Terminal colors
-set -g default-terminal "screen-256color"
+#set -g default-terminal "screen-256color"
+# install ncurses-term or tic -x /Applications/tmux-terminfo.src
+set -g default-terminal "tmux-256color"
 
 # Copy to system clipboard
 set -g set-clipboard on
 bind-key -T copy-mode-vi y send -X copy-selection-and-cancel
 bind-key -T copy-mode-vi Enter send -X copy-selection-and-cancel
-
-# Previous OS-specifc configs keep until WSL tested
-#{{- if eq .chezmoi.os "darwin" }}
-## macOS
-#set -g set-clipboard on
-#bind-key -T copy-mode-vi 'y' send -X copy-pipe-and-cancel "pbcopy"
-#bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "pbcopy"
-#{{- else if eq .chezmoi.os "linux" }}
-#  {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
-## WSL
-#bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "/mnt/c/Windows/System32/clip.exe"
-#  {{- else }}
-## Remote Linux (non-WSL)
-#bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard"
-#  {{- end }}
-#{{- end }}
-#
-## Paste from clipboard
-#{{- if eq .chezmoi.os "darwin" }}
-## macOS (no special binding needed, Command+V works)
-#{{- else if eq .chezmoi.os "linux" }}
-## Linux (including WSL)
-#bind-key -T prefix p run-shell "xclip -o -selection clipboard | tmux load-buffer - ; tmux paste-buffer"
-#{{- end }}
 
 # use vim style selection and block selection
 unbind-key -T copy-mode-vi 'v'
@@ -37,19 +15,20 @@ bind-key -T copy-mode-vi 'v' send -X begin-selection
 # Set Vim keybindings for copy mode
 setw -g mode-keys vi
 
-# Enable mouse mode
-set-option -g mouse on
+# Enable mouse mode, but not remotely
+if-shell -b '[ -n "${SSH_CONNECTION}" ]' \
+    'set-option -g mouse off' \
+    'set-option -g mouse on'
 
-{{- if env "SSH_CONNECTION" }}
-# Remote macahines don't process mouse higlights so local machine can
-set-option -g mouse off
-{{- end }}
+# Scrollback please
+set -g history-limit 50000
 
 # easy-to-remember split pane commands
 bind | split-window -h
 bind - split-window -v
-unbind '"'
-unbind %
+# Unnecssary the rebind will do this?
+#unbind '"'
+#unbind %
 
 # moving between panes with vim movement keys
 bind h select-pane -L
@@ -67,20 +46,16 @@ bind -r M-l swap-window -t +1 \; select-window -t +1
 
 # move panes with vim keys
 unbind L  # Default switch-client -L
-# Just use { and } which are defaults?
-#bind H move-pane -L
-#bind J move-pane -D
-#bind K move-pane -U
-#bind L move-pane -R
+# Just use { and } which are defaults for move pain
 
 # Join pane with @ (break pane is ! by default)
 bind @ command-prompt -p "create pane from:"  "join-pane -s ':%%'"
 
+# Seems unnecessary disasble and see if anything fails
 # Set the base index for windows to 1 instead of 0
-set -g base-index 1
-
+#set -g base-index 1
 # Set the base index for panes to 1 instead of 0
-setw -g pane-base-index 1
+#setw -g pane-base-index 1
 
 # Lower escape time for no lag in vim
 set -g escape-time 10
