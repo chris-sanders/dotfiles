@@ -38,7 +38,7 @@ Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'liuchengxu/vista.vim'
 
 " Copilot
-Plug 'github/copilot.vim'
+"Plug 'github/copilot.vim'
 
 " Helm filetypes
 Plug 'towolf/vim-helm'
