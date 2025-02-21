@@ -13,6 +13,7 @@ add_to_path_once() {
 
 # Add go to path
 add_to_path_once "/Users/chris/go/bin"
+add_to_path_once "/Users/chris/.local/bin"
 
 # gcloud completions from homebrew
 source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
@@ -22,5 +23,6 @@ source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.
 GUSER='chriss'
 GPREFIX='chriss'
 source ~/src/oh-my-replicated/replicated-gcommands/replicated-gcommands.plugin.zsh
+
 
 {{- end }}
