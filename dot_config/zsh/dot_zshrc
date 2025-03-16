@@ -47,3 +47,5 @@ export DIRENV_LOG_FORMAT=""
 if [ -f /etc/profile ]; then
   source /etc/profile
 fi
+
+. "$HOME/.local/share/../bin/env"

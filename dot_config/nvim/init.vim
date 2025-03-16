@@ -40,11 +40,6 @@ Plug 'liuchengxu/vista.vim'
 " Copilot
 "Plug 'github/copilot.vim'
 
-" Aider
-Plug 'GeorgesAlkhouri/nvim-aider'
-Plug 'folke/snacks.nvim'
-Plug 'catppuccin/nvim'
-
 " Helm filetypes
 Plug 'towolf/vim-helm'
 
@@ -188,11 +183,6 @@ autocmd FileType go nnoremap <buffer> <F6> :silent call CocAction("runCommand", 
 " Examples of auto organize and auto format for go files on write
 " autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
 " autocmd BufWritePre *.go :silent call CocAction('format')
-
-lua << EOF
-require('snacks').setup()
-require('nvim_aider').setup()
-EOF
 
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 cmap w!! w !sudo tee > /dev/null %
