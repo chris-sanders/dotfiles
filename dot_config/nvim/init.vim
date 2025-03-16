@@ -26,8 +26,8 @@ Plug 'junegunn/fzf.vim'
 " Coc.nvim
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Snippets
-Plug 'honza/vim-snippets'
+" Snippets (not using anymore?)
+" Plug 'honza/vim-snippets'
 
 " Make gx work on mac?
 Plug 'godlygeek/tabular'
@@ -99,8 +99,10 @@ let g:lightline = {
 autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 
 " Coc
-let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-tsserver', 'coc-sh', 'coc-yaml', 'coc-snippets', 'coc-markdownlint', 'coc-marketplace', 'coc-spell-checker', 'coc-go', 'coc-pyright']
+let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-tsserver', 'coc-sh', 'coc-yaml', 'coc-markdownlint', 'coc-marketplace', 'coc-spell-checker', 'coc-go', 'coc-pyright']
 " autocmd BufRead,BufNewFile */templates/*.yaml set filetype=helm
+
+
 
 " Tabs
 set tabstop=4
@@ -108,15 +110,15 @@ set expandtab
 set shiftwidth=2
 
 " coc-snippets mappings (maybe all autocomplete?)
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-inoremap <silent><expr> <C-x><C-z> coc#pum#visible() ? coc#pum#stop() : "\<C-x>\<C-z>"
-" remap for complete to use tab and <cr>
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1):
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-inoremap <silent><expr> <c-space> coc#refresh()
+" inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" inoremap <silent><expr> <C-x><C-z> coc#pum#visible() ? coc#pum#stop() : "\<C-x>\<C-z>"
+" " remap for complete to use tab and <cr>
+" inoremap <silent><expr> <TAB>
+"       \ coc#pum#visible() ? coc#pum#next(1):
+"       \ <SID>check_back_space() ? "\<Tab>" :
+"       \ coc#refresh()
+" inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+" inoremap <silent><expr> <c-space> coc#refresh()
 
 hi CocSearch ctermfg=12 guifg=#18A3FF
 hi CocMenuSel ctermbg=109 guibg=#13354A
