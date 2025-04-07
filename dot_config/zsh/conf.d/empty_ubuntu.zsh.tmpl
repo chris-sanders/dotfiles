@@ -10,4 +10,7 @@ add_to_path_once() {
 add_to_path_once "/snap/bin"
 add_to_path_once "$HOME/local/bin"
 
+# Setup local npm-modules
+add_to_path_once "$HOME/.npm-modules"
+
 {{- end }}
