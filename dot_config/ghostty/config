@@ -1,1 +1,2 @@
 background = #000000
+quit-after-last-window-closed = true
