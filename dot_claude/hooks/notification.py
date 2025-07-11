@@ -1,17 +1,16 @@
-#!/usr/bin/env python3
 """
-Notification Hook - Home Assistant Integration
-Requires HOMEASSISTANT_TOKEN environment variable
+Notification hook example for claude-hooks.
+This hook responds to various Claude Code notifications.
+Includes Home Assistant integration.
 """
+
 import os
 import socket
 import urllib.request
 import urllib.parse
 import json
+from claude_hooks import run_hooks
 
-from hook_utils import HookContext, run_hooks, NotificationHook, neutral
-
-# Configuration
 HOMEASSISTANT_URL = "https://ha.zarek.cc/api/services/notify/mobile_app_pixel_9_pro_xl"
 DEFAULT_TITLE = "Claude Code"
 
@@ -36,7 +35,7 @@ def send_home_assistant_notification(
     )
 
     try:
-        with urllib.request.urlopen(req, timeout=10) as response:
+        with urllib.request.urlopen(req, timeout=10):
             return True, "Notification sent successfully"
     except urllib.error.HTTPError as e:
         return False, f"HTTP {e.code}: {e.read().decode()}"
@@ -46,25 +45,16 @@ def send_home_assistant_notification(
         return False, f"Unexpected error: {str(e)}"
 
 
-def notify_ha(ctx: HookContext):
-    import logging
-
-    hook = NotificationHook(ctx)
+def notify_ha(event):
     hostname = socket.gethostname()
-    message = (
-        f"{hook.message} on {hostname}"
-        if hook.message
-        else f"Notification on {hostname}"
-    )
-
+    message = f"{hostname}: {event.message}"
+    
     success, error_msg = send_home_assistant_notification(message)
-
-    if success:
-        logging.info(f"Notification sent: {message}")
-    else:
-        logging.error(f"Failed to send notification: {error_msg}")
-
-    return neutral()
+    
+    if not success:
+        print(f"Failed to send Home Assistant notification: {error_msg}")
+    
+    return event.undefined()
 
 
 if __name__ == "__main__":

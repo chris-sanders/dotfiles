@@ -2,3 +2,5 @@
 ansible/
 ansible/.envrc
 {{- end }}
+.claude/hooks/.venv/**
+.claude/hooks/logs/*

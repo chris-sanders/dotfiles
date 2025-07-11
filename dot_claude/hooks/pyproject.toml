@@ -1,14 +1,10 @@
 [project]
-name = "claude-hooks"
+name = "claude-hooks-config"
 version = "0.1.0"
-description = "Claude Code hooks utilities"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
-    "black>=25.1.0",
-    "requests",
+    "claude-hooks",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest",
-]
+[tool.uv.sources]
+claude-hooks = { path = "../../src/claude-hooks", editable = true }
