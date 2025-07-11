@@ -2,5 +2,6 @@
 ansible/
 ansible/.envrc
 {{- end }}
-.claude/hooks/.venv/**
-.claude/hooks/logs/*
+dot_claude/hooks/dot_venv/
+dot_claude/hooks/logs/
+dot_claude/hooks/uv.lock/
