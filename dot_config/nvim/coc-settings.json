@@ -1,8 +1,8 @@
 {
   // Important, otherwise link completion containing spaces and other special characters won't work.
   "suggest.invalidInsertCharacters": [],
-  "diagnostic.virtualText": true,
-  "diagnostic.virtualTextCurrentLineOnly": true,
+  "diagnostic.virtualText": false,
+  // "diagnostic.virtualTextCurrentLineOnly": true,
   "go.goplsOptions": {
     "formatting.gofumpt": true
   },
@@ -33,6 +33,7 @@
   },
   "python.formatting.provider": "black",
   "python.analysis.typeCheckingMode": "off",
+  "inlayHint.enable": false,
   "markdownlint.config": {
     "default": true,
     "line_length": false,
