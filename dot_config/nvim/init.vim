@@ -132,12 +132,12 @@ hi CocMenuSel ctermbg=109 guibg=#13354A
 let g:python3_host_prog = "/Users/chris/Library/Caches/pypoetry/virtualenvs/venv-FLagT_ML-py3.13"
 
 "zk
-command! -nargs=0 ZkIndex :call CocAction("runCommand", "zk.index", expand("%:p"))
-command! -nargs=? ZkNew :exec "edit ".CocAction("runCommand", "zk.new", expand("%:p"), <args>).path
+"command! -nargs=0 ZkIndex :call CocAction("runCommand", "zk.index", expand("%:p"))
+"command! -nargs=? ZkNew :exec "edit ".CocAction("runCommand", "zk.new", expand("%:p"), <args>).path
 
-nnoremap <leader>zi :ZkIndex<CR>
-nnoremap <leader>zn :ZkNew {"title": input("Title: ")}<CR>
-nnoremap <leader>zj :ZkNew {"dir": "journal/daily"}<CR>
+"nnoremap <leader>zi :ZkIndex<CR>
+"nnoremap <leader>zn :ZkNew {"title": input("Title: ")}<CR>
+"nnoremap <leader>zj :ZkNew {"dir": "journal/daily"}<CR>
 
 " coc-markdownlint
 let g:coc_filetype_map = { 'pandoc': 'markdown' }
@@ -178,8 +178,8 @@ map <F4> :NERDTreeToggle<CR>
 map <F5> :call CocAction("format")<CR>
 map <F9> :Vista!!<CR>
 map <F10> :Vista finder fzf:coc<CR>
-autocmd FileType markdown nnoremap <buffer> <F5> :call CocAction("runCommand", "markdownlint.fixAll")<CR>
-autocmd FileType go nnoremap <buffer> <F6> :silent call CocAction("runCommand", "editor.action.organizeImport")<CR>
+"autocmd FileType markdown nnoremap <buffer> <F5> :call CocAction("runCommand", "markdownlint.fixAll")<CR>
+"autocmd FileType go nnoremap <buffer> <F6> :silent call CocAction("runCommand", "editor.action.organizeImport")<CR>
 
 " Autocommands
 " Examples of auto organize and auto format for go files on write
