@@ -20,15 +20,48 @@ HOMEASSISTANT_URL = "https://ha.zarek.cc/api/services/notify/mobile_app_pixel_9_
 DEFAULT_TITLE = "Claude Code"
 
 
-def send_home_assistant_notification(
-    message: str, title: str = DEFAULT_TITLE
-) -> tuple[bool, str]:
+def clear_home_assistant_notification(tag: str) -> tuple[bool, str]:
+    """Clear a Home Assistant notification by tag."""
     token = os.getenv("HOMEASSISTANT_TOKEN")
     if not token:
         return False, "HOMEASSISTANT_TOKEN environment variable not set"
 
     payload = json.dumps(
-        {"message": message, "title": title, "data": {"ttl": 0, "priority": "high"}}
+        {"message": "clear_notification", "data": {"tag": tag}}
+    ).encode("utf-8")
+    req = urllib.request.Request(
+        HOMEASSISTANT_URL,
+        data=payload,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        },
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=10):
+            return True, f"Notification cleared successfully (tag: {tag})"
+    except urllib.error.HTTPError as e:
+        return False, f"HTTP {e.code}: {e.read().decode()}"
+    except (urllib.error.URLError, OSError) as e:
+        return False, f"Connection error: {str(e)}"
+    except Exception as e:
+        return False, f"Unexpected error: {str(e)}"
+
+
+def send_home_assistant_notification(
+    message: str, title: str = DEFAULT_TITLE, tag: str = None
+) -> tuple[bool, str]:
+    token = os.getenv("HOMEASSISTANT_TOKEN")
+    if not token:
+        return False, "HOMEASSISTANT_TOKEN environment variable not set"
+
+    data = {"ttl": 0, "priority": "high"}
+    if tag:
+        data["tag"] = tag
+    
+    payload = json.dumps(
+        {"message": message, "title": title, "data": data}
     ).encode("utf-8")
     req = urllib.request.Request(
         HOMEASSISTANT_URL,
@@ -73,11 +106,22 @@ def send_macos_notification(message: str, title: str = "Claude Code") -> tuple[b
 
 def notify_ha(event):
     hostname = socket.gethostname()
-    message = f"{hostname}: Claude conversation finished"
+    tag = f"{hostname}-{event.session_id}"
     
-    success, error_msg = send_home_assistant_notification(message, "Claude Stop")
-    if not success:
-        logger.error(f"Failed to send Home Assistant notification: {error_msg}")
+    # Clear the session notification first
+    clear_success, clear_msg = clear_home_assistant_notification(tag)
+    if not clear_success:
+        logger.warning(f"Failed to clear Home Assistant notification: {clear_msg}")
+    else:
+        logger.info(f"Cleared Home Assistant notification: {clear_msg}")
+    
+    # Send the stop notification
+    message = f"{hostname}: Claude conversation finished"
+    send_success, send_msg = send_home_assistant_notification(message, "Claude Stop")
+    if not send_success:
+        logger.error(f"Failed to send Home Assistant notification: {send_msg}")
+    else:
+        logger.info("Home Assistant stop notification sent successfully")
     
     return event.undefined()
 

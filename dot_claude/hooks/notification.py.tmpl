@@ -42,14 +42,18 @@ def send_macos_notification(message: str, title: str = DEFAULT_TITLE) -> tuple[b
 
 
 def send_home_assistant_notification(
-    message: str, title: str = DEFAULT_TITLE
+    message: str, title: str = DEFAULT_TITLE, tag: str = None
 ) -> tuple[bool, str]:
     token = os.getenv("HOMEASSISTANT_TOKEN")
     if not token:
         return False, "HOMEASSISTANT_TOKEN environment variable not set"
 
+    data = {"ttl": 0, "priority": "high"}
+    if tag:
+        data["tag"] = tag
+    
     payload = json.dumps(
-        {"message": message, "title": title, "data": {"ttl": 0, "priority": "high"}}
+        {"message": message, "title": title, "data": data}
     ).encode("utf-8")
     req = urllib.request.Request(
         HOMEASSISTANT_URL,
@@ -74,13 +78,14 @@ def send_home_assistant_notification(
 def notify_ha(event):
     hostname = socket.gethostname()
     message = f"{hostname}: {event.message}"
+    tag = f"{hostname}-{event.session_id}"
     
-    success, error_msg = send_home_assistant_notification(message)
+    success, error_msg = send_home_assistant_notification(message, tag=tag)
     
     if not success:
         logger.error(f"Failed to send Home Assistant notification: {error_msg}")
     else:
-        logger.info("Home Assistant notification sent successfully")
+        logger.info(f"Home Assistant notification sent successfully (tag: {tag})")
     
     return event.undefined()
 
