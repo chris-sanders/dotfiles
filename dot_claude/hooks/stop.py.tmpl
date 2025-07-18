@@ -108,16 +108,9 @@ def notify_ha(event):
     hostname = socket.gethostname()
     tag = f"{hostname}-{event.session_id}"
     
-    # Clear the session notification first
-    clear_success, clear_msg = clear_home_assistant_notification(tag)
-    if not clear_success:
-        logger.warning(f"Failed to clear Home Assistant notification: {clear_msg}")
-    else:
-        logger.info(f"Cleared Home Assistant notification: {clear_msg}")
-    
     # Send the stop notification
     message = f"{hostname}: Claude conversation finished"
-    send_success, send_msg = send_home_assistant_notification(message, "Claude Stop")
+    send_success, send_msg = send_home_assistant_notification(message, "Claude Stop", tag=tag)
     if not send_success:
         logger.error(f"Failed to send Home Assistant notification: {send_msg}")
     else:
