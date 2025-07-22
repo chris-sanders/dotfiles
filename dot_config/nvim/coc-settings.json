@@ -12,18 +12,6 @@
     "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json": ["**/playbooks/*.yml", "**/roles/**/*.yml"]
   },
   "languageserver": {
-    "zk": {
-      "command": "zk",
-      "args": [
-        "lsp"
-      ],
-      //"args": ["lsp", "--log", "~/tmp/zk.log"],
-      "trace.server": "messages",
-      "filetypes": [
-        "markdown",
-        "pandoc"
-      ]
-    },
     "helm": {
       "command": "helm_ls",
       "args": ["serve"],
