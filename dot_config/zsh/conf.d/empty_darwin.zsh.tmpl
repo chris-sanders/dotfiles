@@ -2,6 +2,9 @@
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Increase fd limit
+ulimit -n 10240
+
 # Alias sbctl
 alias sbc="sbctl shell --token=$VPTOKEN --support-bundle-location $1"
 
