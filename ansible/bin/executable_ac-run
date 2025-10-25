@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# ~/ansible/bin/ac-run
+
+# Source the common script
+source "$(dirname "$0")/container-exec.sh"
+
+# Check if command was provided
+if [ $# -eq 0 ]; then
+  echo "Usage: ac-run <command> [args...]"
+  echo "Example: ac-run molecule converge -s proxmox"
+  exit 1
+fi
+
+# Execute any command in the container
+execute_in_container "$@"

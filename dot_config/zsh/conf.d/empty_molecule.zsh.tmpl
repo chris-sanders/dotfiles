@@ -1,0 +1,17 @@
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
+# Molecule environment switching functions
+function dev1 {
+  export MOLECULE_VM_ENVIRONMENT=dev1
+  echo "✅ Switched to dev1 (container: ansible-molecule-dev1)"
+}
+
+function dev2 {
+  export MOLECULE_VM_ENVIRONMENT=dev2
+  echo "✅ Switched to dev2 (container: ansible-molecule-dev2)"
+}
+
+function ci {
+  export MOLECULE_VM_ENVIRONMENT=ci
+  echo "✅ Switched to ci (container: ansible-molecule-ci)"
+}
+{{- end }}

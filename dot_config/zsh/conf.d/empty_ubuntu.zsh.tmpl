@@ -13,4 +13,8 @@ add_to_path_once "$HOME/local/bin"
 # Setup local npm-modules
 add_to_path_once "$HOME/.npm-modules/bin"
 
+# Setup flyctl
+export FLYCTL_INSTALL="/home/chris/.fly"
+export PATH="$FLYCTL_INSTALL/bin:$PATH"
+
 {{- end }}

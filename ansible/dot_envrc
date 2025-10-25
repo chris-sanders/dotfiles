@@ -1,3 +1,9 @@
-export VIRTUAL_ENV=./venvs/ansible-2.16-venv
-source $VIRTUAL_ENV/bin/activate
-unset PS1
+# ~/ansible/.envrc
+
+# Add wrapper scripts to front of path
+export PATH="$PWD/bin:$PATH"
+
+# Warn if not explicitly set
+if [ -z "$MOLECULE_VM_ENVIRONMENT" ]; then
+  echo "⚠️  MOLECULE_VM_ENVIRONMENT not set. Run: dev1, dev2, or ci"
+fi

@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# ~/ansible/bin/ac-stop
+
+# Parse command-line arguments
+AUTO_DESTROY=false
+if [ "$1" = "--destroy" ] || [ "$1" = "-d" ]; then
+  AUTO_DESTROY=true
+fi
+
+# Calculate container name dynamically
+ANSIBLE_CONTAINER_NAME="ansible-molecule-${MOLECULE_VM_ENVIRONMENT:-dev1}"
+
+# Check for active molecule instances that could be orphaned
+echo "Checking for active molecule instances..."
+active_instances=()
+
+# Check if container is running before trying to exec into it
+if [ "$(podman container inspect -f '{{.State.Running}}' $ANSIBLE_CONTAINER_NAME 2>/dev/null)" = "true" ]; then
+  # Find all molecule scenario directories
+  while IFS= read -r scenario_yml; do
+    if [ -n "$scenario_yml" ]; then
+      scenario_dir=$(dirname "$scenario_yml")
+      scenario_name=$(basename "$scenario_dir")
+      project_dir=$(dirname "$(dirname "$scenario_dir")")
+
+      # Run molecule list in this scenario and check for active instances
+      # molecule list output format: Instance Name | Driver Name | Provisioner Name | Scenario Name | Created | Converged
+      # We check if Created or Converged columns show "true" (meaning VM exists)
+      molecule_output=$(podman exec -w "$project_dir" $ANSIBLE_CONTAINER_NAME molecule list -s "$scenario_name" 2>/dev/null)
+
+      # Check if any line contains "true" in the Created or Converged columns (excluding header)
+      if echo "$molecule_output" | tail -n +2 | grep -E '\s+true\s+' > /dev/null 2>&1; then
+        active_instances+=("$project_dir|$scenario_name")
+      fi
+    fi
+  done < <(podman exec $ANSIBLE_CONTAINER_NAME find /workspace -type f -path "*/molecule/*/molecule.yml" 2>/dev/null)
+fi
+
+if [ ${#active_instances[@]} -gt 0 ]; then
+  echo "⚠️  WARNING: Found ${#active_instances[@]} active molecule instance(s):"
+  for instance in "${active_instances[@]}"; do
+    IFS='|' read -r project scenario <<< "$instance"
+    echo "   - $project (scenario: $scenario)"
+  done
+  echo ""
+
+  if [ "$AUTO_DESTROY" = true ]; then
+    echo "🔥 Auto-destroying all active instances..."
+    for instance in "${active_instances[@]}"; do
+      IFS='|' read -r project scenario <<< "$instance"
+      echo "   Destroying $project (scenario: $scenario)..."
+      podman exec -w "$project" $ANSIBLE_CONTAINER_NAME molecule destroy -s "$scenario"
+    done
+    echo "✅ All instances destroyed."
+  else
+    echo "💡 Active VMs must be destroyed before stopping to prevent orphaned VMs."
+    echo "   Options:"
+    echo "   1. Run 'ac-stop --destroy' to automatically destroy all instances"
+    echo "   2. Manually run 'ac-run molecule destroy -s <scenario>' for each scenario"
+    echo ""
+    read -p "Continue stopping container anyway? [y/N]: " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      echo "Cancelled. Container not stopped."
+      exit 1
+    fi
+  fi
+fi
+
+echo "Stopping ansible-molecule container..."
+podman rm --force $ANSIBLE_CONTAINER_NAME

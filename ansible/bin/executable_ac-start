@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# ~/ansible/bin/ac-start
+
+# Calculate container name dynamically
+ANSIBLE_CONTAINER_NAME="ansible-molecule-${MOLECULE_VM_ENVIRONMENT:-dev1}"
+
+# Check if container exists
+if podman container exists $ANSIBLE_CONTAINER_NAME; then
+  # Container exists, check if it's running
+  if [ "$(podman container inspect -f '{{.State.Running}}' $ANSIBLE_CONTAINER_NAME 2>/dev/null)" != "true" ]; then
+    echo "Starting existing ansible-molecule container..."
+    podman container start $ANSIBLE_CONTAINER_NAME
+  else
+    # Container is already running, show current working directory info
+    CURRENT_MOUNT=$(podman container inspect -f '{{range .Mounts}}{{if eq .Destination "/workspace"}}{{.Source}}{{end}}{{end}}' $ANSIBLE_CONTAINER_NAME 2>/dev/null)
+    echo "Ansible-molecule container is already running"
+    echo "Current working directory mounted: ${CURRENT_MOUNT} -> /workspace"
+    if [ "$(pwd)" != "$CURRENT_MOUNT" ]; then
+      echo "WARNING: You are in $(pwd) but container has ${CURRENT_MOUNT} mounted as /workspace"
+    fi
+  fi
+else
+  # Container doesn't exist, create and start it
+  echo "Creating and starting new ansible-molecule container..."
+  podman run -d --name $ANSIBLE_CONTAINER_NAME \
+    --group-add keep-groups \
+    -v /dev/kvm:/dev/kvm \
+    -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock \
+    -v "$HOME/.vagrant.d":/root/.vagrant.d \
+    -v $HOME/.ssh:/root/.ssh:ro \
+    -v $(dirname $SSH_AUTH_SOCK):$(dirname $SSH_AUTH_SOCK) \
+    -v $HOME/ansible/inventories/chris:/root/ansible/inventories/chris:ro \
+    -v $HOME/clusters:/root/clusters \
+    -v $HOME/.config/.ansible_vault.txt:/root/.config/.ansible_vault.txt \
+    -e ANSIBLE_VAULT_PASSWORD_FILE=/root/.config/.ansible_vault.txt \
+    -e SSH_AUTH_SOCK=$SSH_AUTH_SOCK \
+    -e PROXMOX_HOST=$PROXMOX_HOST \
+    -e PROXMOX_USER=$PROXMOX_USER \
+    -e PROXMOX_API_TOKEN_ID=$PROXMOX_API_TOKEN_ID \
+    -e PROXMOX_API_TOKEN_SECRET=$PROXMOX_API_TOKEN_SECRET \
+    -e MOLECULE_VM_ENVIRONMENT=$MOLECULE_VM_ENVIRONMENT \
+    -v "$(pwd):/workspace" \
+    localhost/ansible-molecule:latest sleep infinity
+fi

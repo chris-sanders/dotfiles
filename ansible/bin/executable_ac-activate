@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# ~/ansible/bin/ac-activate
+#
+# Activate a molecule environment by setting MOLECULE_VM_ENVIRONMENT
+# Usage: source ac-activate <env>
+#        or: . ac-activate <env>
+# Example: source ac-activate dev2
+
+# Detect if script is being sourced
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  echo "❌ Error: This script must be sourced, not executed."
+  echo ""
+  echo "Usage:"
+  echo "  source ac-activate <env>"
+  echo "  or: . ac-activate <env>"
+  echo ""
+  echo "Example:"
+  echo "  source ac-activate dev2"
+  exit 1
+fi
+
+# Check if environment was provided
+if [ $# -eq 0 ]; then
+  echo "Usage: source ac-activate <env>"
+  echo ""
+  echo "Available environments:"
+  echo "  - dev1 (default)"
+  echo "  - dev2"
+  echo "  - ci"
+  echo ""
+  echo "Current environment: ${MOLECULE_VM_ENVIRONMENT:-dev1}"
+  return 1
+fi
+
+ENV_NAME=$1
+
+# Validate environment name (optional - you can add more validation if needed)
+case $ENV_NAME in
+  dev1|dev2|ci)
+    ;;
+  *)
+    echo "⚠️  Warning: '$ENV_NAME' is not a standard environment (dev1, dev2, ci)"
+    echo "   Proceeding anyway..."
+    ;;
+esac
+
+# Export the environment variable
+export MOLECULE_VM_ENVIRONMENT=$ENV_NAME
+
+# Provide feedback
+CONTAINER_NAME="ansible-molecule-${MOLECULE_VM_ENVIRONMENT}"
+echo "✅ Activated molecule environment: $MOLECULE_VM_ENVIRONMENT"
+echo "   Container: $CONTAINER_NAME"
+
+# Check if the container is running
+if podman container exists $CONTAINER_NAME 2>/dev/null; then
+  if [ "$(podman container inspect -f '{{.State.Running}}' $CONTAINER_NAME 2>/dev/null)" = "true" ]; then
+    echo "   Status: Running"
+  else
+    echo "   Status: Stopped (use 'ac-start' to start)"
+  fi
+else
+  echo "   Status: Not created (use 'ac-start' to create)"
+fi
