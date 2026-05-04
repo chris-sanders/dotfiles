@@ -16,7 +16,7 @@ active_instances=()
 
 # Check if container is running before trying to exec into it
 if [ "$(podman container inspect -f '{{.State.Running}}' $ANSIBLE_CONTAINER_NAME 2>/dev/null)" = "true" ]; then
-  # Find all molecule scenario directories
+  # Find all molecule scenario directories (exclude venv and hidden dirs)
   while IFS= read -r scenario_yml; do
     if [ -n "$scenario_yml" ]; then
       scenario_dir=$(dirname "$scenario_yml")
@@ -26,14 +26,18 @@ if [ "$(podman container inspect -f '{{.State.Running}}' $ANSIBLE_CONTAINER_NAME
       # Run molecule list in this scenario and check for active instances
       # molecule list output format: Instance Name | Driver Name | Provisioner Name | Scenario Name | Created | Converged
       # We check if Created or Converged columns show "true" (meaning VM exists)
-      molecule_output=$(podman exec -w "$project_dir" $ANSIBLE_CONTAINER_NAME molecule list -s "$scenario_name" 2>/dev/null)
+      molecule_output=$(podman exec -w "$project_dir" $ANSIBLE_CONTAINER_NAME molecule list -s "$scenario_name" 2>&1)
 
-      # Check if any line contains "true" in the Created or Converged columns (excluding header)
-      if echo "$molecule_output" | tail -n +2 | grep -E '\s+true\s+' > /dev/null 2>&1; then
-        active_instances+=("$project_dir|$scenario_name")
+      # Check exit code and output for active instances
+      if [ $? -eq 0 ]; then
+        # Check if any line contains "true" in the Created or Converged columns (excluding header)
+        # Also check for "running" or "created" status in the output
+        if echo "$molecule_output" | tail -n +2 | grep -iE '\s+(true|running|created)\s+' > /dev/null 2>&1; then
+          active_instances+=("$project_dir|$scenario_name")
+        fi
       fi
     fi
-  done < <(podman exec $ANSIBLE_CONTAINER_NAME find /workspace -type f -path "*/molecule/*/molecule.yml" 2>/dev/null)
+  done < <(podman exec $ANSIBLE_CONTAINER_NAME find /workspace -type f -path "*/molecule/*/molecule.yml" ! -path "*/venv*/*" ! -path "*/.*/*" 2>/dev/null)
 fi
 
 if [ ${#active_instances[@]} -gt 0 ]; then
