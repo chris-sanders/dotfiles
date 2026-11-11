@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+"""Manage Codex's auto-compaction limit without replacing other local config."""
+
+import re
+import sys
+
+
+config = sys.stdin.read()
+setting = "model_auto_compact_token_limit = 268000"
+assignment = re.compile(r"(?m)^model_auto_compact_token_limit\s*=.*$")
+
+if assignment.search(config):
+    config = assignment.sub(setting, config, count=1)
+else:
+    lines = config.splitlines()
+    for index, line in enumerate(lines):
+        if re.match(r"\s*\[[^]]+\]", line):
+            lines.insert(index, setting)
+            break
+    else:
+        lines.append(setting)
+    config = "\n".join(lines)
+
+sys.stdout.write(config.rstrip() + "\n")
