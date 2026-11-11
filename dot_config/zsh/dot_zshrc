@@ -2,20 +2,17 @@
 source ${ZDOTDIR}/antidote/antidote.zsh
 antidote load ${ZDOTDIR}/zsh_plugins.txt
 
-# Create tmux by default
-#echo "Checking TMUX variable: $TMUX"
-if [[ $- == *i* ]] && [ -z "$TMUX" ]; then
-  #echo "TMUX env var is empty - not inside tmux."
+# Create tmux by default in a regular interactive terminal. Agent-launched
+# shells stay detached so coding tools can manage their own terminal sessions.
+if [[ $- == *i* && -z "$TMUX" && -z "${ZSH_NO_AUTO_TMUX:-}" \
+      && -z "${T3CODE_THREAD_ID:-}" && -z "${CODEX_SESSION_ID:-}" \
+      && -z "${CODEX_THREAD_ID:-}" ]]; then
   session=$(tmux list-sessions -F "#{session_attached} #{session_name}" 2>/dev/null | grep "^0" | cut -d " " -f2 | head -n 1)
   if [ -n "$session" ]; then
-    #echo "Detached session found: $session"
     tmux attach-session -t "$session" 2>/dev/null
   else
-    #echo "No detached sessions, starting a new one."
     tmux new-session 2>/dev/null
   fi
-else
-  #echo "Already inside tmux: $TMUX, not re-launching"
 fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.

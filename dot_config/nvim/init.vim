@@ -120,8 +120,7 @@ hi CocMenuSel ctermbg=109 guibg=#13354A
 " nnoremap <C-n> :NERDTreeMirror<CR>:NERDTreeFocus<CR>
 
 " coc-pyright
-" MacOS location
-let g:python3_host_prog = "/Users/chris/Library/Caches/pypoetry/virtualenvs/venv-FLagT_ML-py3.13"
+" Let Neovim find the Python host in the current environment.
 
 "zk
 "command! -nargs=0 ZkIndex :call CocAction("runCommand", "zk.index", expand("%:p"))

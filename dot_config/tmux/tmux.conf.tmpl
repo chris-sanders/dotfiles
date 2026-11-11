@@ -1,20 +1,14 @@
 # Terminal colors
-# install ncurses-term or tic -x /Applications/tmux-terminfo.src
+# Install ncurses-term on Ubuntu for the tmux-256color terminfo entry.
 set -g default-terminal "tmux-256color"
 
-# Copy to system clipboard
+# Clipboard support for Windows Terminal, Ghostty, and nested SSH tmux.
 set -g set-clipboard on
-set -ag terminal-features ",xterm-256color:clipboard"
+set -ag terminal-features ",xterm*:clipboard,tmux-256color:clipboard"
 set -ag terminal-overrides ",xterm*:Ms=\\E]52;%p1%s;%p2%s\\007"
 bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'tmux load-buffer -w -'
 bind-key -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel 'tmux load-buffer -w -'
-
-# Copy to system clipboard
-set -g set-clipboard on
-set -ag terminal-features ",xterm-256color:clipboard"
-set -ag terminal-overrides ",xterm*:Ms=\\E]52;%p1%s;%p2%s\\007"
-bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'tmux load-buffer -w -'
-bind-key -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel 'tmux load-buffer -w -'
+set -g allow-passthrough on
 
 # use vim style selection and block selection
 unbind-key -T copy-mode-vi 'v'

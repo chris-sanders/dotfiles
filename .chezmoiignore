@@ -2,6 +2,11 @@
 ansible/
 ansible/.envrc
 {{- end }}
+{{ if ne .chezmoi.os "darwin" }}
+.config/aerospace/
+.config/skhd/
+.config/yabai/
+{{ end }}
 dot_claude/hooks/dot_venv/
 dot_claude/hooks/logs/
 dot_claude/hooks/uv.lock/
