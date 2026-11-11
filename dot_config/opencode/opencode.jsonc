@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "compaction": {
+    "auto": true,
+    "buffer": "73.2%",
+    "keep": {
+      "tokens": 15000
+    }
+  }
+}

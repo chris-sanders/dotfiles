@@ -1,5 +1,13 @@
 {
   "includeCoAuthoredBy": false,
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "autoCompactWindow": 300000
+    },
+    "claude-sonnet-5-5": {
+      "autoCompactWindow": 300000
+    }
+  },
   "hooks": {
     "Notification": [
       {
