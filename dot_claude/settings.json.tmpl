@@ -7,5 +7,19 @@
     "claude-sonnet-5-5": {
       "autoCompactWindow": 300000
     }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "s=\"$HOME/src/agent-workflow/scripts/session-start.sh\"; [ -f \"$s\" ] && bash \"$s\"; exit 0",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }
