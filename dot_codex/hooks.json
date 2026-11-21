@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "s=\"$HOME/src/agent-workflow/scripts/session-start.sh\"; [ -f \"$s\" ] && bash \"$s\"; exit 0",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
