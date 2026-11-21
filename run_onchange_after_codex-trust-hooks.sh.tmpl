@@ -1,0 +1,9 @@
+#!/bin/bash
+# Re-approve the agent-workflow session-start hook in Codex whenever chezmoi changes
+# ~/.codex/hooks.json (Codex re-asks after any change). Runs only when this hash changes:
+# hooks.json sha256: {{ include "dot_codex/hooks.json" | sha256sum }}
+s="$HOME/src/agent-workflow/scripts/codex-trust-hooks.py"
+if [ -f "$s" ] && command -v python3 >/dev/null 2>&1; then
+  python3 "$s" --install || true
+fi
+exit 0
