@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+"""Best-effort, user-owned Go build-cache maintenance on Linux."""
+import argparse
+import os
+from pathlib import Path
+import re
+import stat
+import time
+
+GIB = 1024 ** 3
+HOUR = 3600
+ARTIFACT = re.compile(r"[0-9a-f]{64}-[ad]")
+
+def budget(capacity):
+    maximum = int(os.environ.get("GO_CACHE_MAX_GIB", "100"))
+    percent = int(os.environ.get("GO_CACHE_MAX_PERCENT", "15"))
+    if maximum <= 0 or not 1 <= percent <= 100:
+        raise ValueError("invalid Go cache budget")
+    return min(maximum * GIB, capacity * percent // 100)
+
+def clean(cache, dry_run=False, now=None):
+    now = time.time() if now is None else now
+    if not cache.is_absolute() or cache.resolve() != cache or not cache.is_dir():
+        print("Go cache absent or not a real absolute directory; skipping")
+        return
+    root = cache.stat()
+    if root.st_uid != os.getuid():
+        raise ValueError("Go cache is not owned by current user")
+    fs = os.statvfs(cache)
+    used = (fs.f_blocks - fs.f_bfree) * fs.f_frsize
+    capacity = used + fs.f_bavail * fs.f_frsize
+    cap = budget(capacity)
+    pressure = capacity > 0 and used * 100 >= capacity * 80
+    relief = max(0, used - capacity * 70 // 100) if pressure else 0
+    total = removed = count = 0
+    candidates = []
+
+    def discard(path, old):
+        nonlocal removed, count
+        # Recheck identity and age: Go may have reused or replaced this file.
+        try:
+            current = path.lstat()
+            if (current.st_dev, current.st_ino, current.st_mtime_ns,
+                current.st_size, current.st_blocks, current.st_nlink) != (
+                old.st_dev, old.st_ino, old.st_mtime_ns,
+                old.st_size, old.st_blocks, old.st_nlink):
+                return
+            if path.parent.resolve() != path.parent:
+                return
+            if not dry_run:
+                path.unlink()
+            removed += old.st_blocks * 512
+            count += 1
+        except FileNotFoundError:
+            pass
+
+    for i in range(256):
+        shard = cache / f"{i:02x}"
+        try:
+            s = shard.lstat()
+            if not stat.S_ISDIR(s.st_mode) or s.st_dev != root.st_dev or s.st_uid != root.st_uid:
+                continue
+            # Snapshot one shard before deleting entries, as Go's own trim does.
+            with os.scandir(shard) as entries:
+                names = [e.name for e in entries if ARTIFACT.fullmatch(e.name)
+                         and e.name.startswith(shard.name)]
+        except FileNotFoundError:
+            continue
+        for name in names:
+            path = shard / name
+            try:
+                info = path.lstat()
+            except FileNotFoundError:
+                continue
+            if (not stat.S_ISREG(info.st_mode) or info.st_dev != root.st_dev
+                    or info.st_uid != root.st_uid or info.st_nlink != 1):
+                continue
+            total += info.st_blocks * 512
+            age = now - info.st_mtime
+            if age >= 48 * HOUR:
+                discard(path, info)
+            elif age >= 6 * HOUR:
+                candidates.append((info.st_mtime, path, info))
+
+    goal = max(0, total - cap, relief)
+    if removed < goal:
+        candidates.sort(key=lambda item: item[0])
+        for _, path, info in candidates:
+            if removed >= goal:
+                break
+            discard(path, info)
+    print(f"{'Would remove' if dry_run else 'Removed'} {count} files, "
+          f"{removed / GIB:.2f} GiB; managed cache {total / GIB:.2f} GiB before, "
+          f"budget {cap / GIB:.2f} GiB; disk pressure={pressure}")
+    if removed < goal:
+        print("Target not reached: recent or changed entries are protected")
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
+    if os.getuid() == 0:
+        parser.error("run as the developer account, not root")
+    default = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "go-build"
+    cache = Path(os.environ.get("GO_CACHE_DIR") or default)
+    clean(cache, args.dry_run)
+
+if __name__ == "__main__":
+    main()
