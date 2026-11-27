@@ -10,3 +10,12 @@ ansible/.envrc
 dot_claude/hooks/dot_venv/
 dot_claude/hooks/logs/
 dot_claude/hooks/uv.lock/
+
+# Source-only documentation and tests.
+docs/go-cache-maintenance.md
+tests/
+{{ if ne .chezmoi.os "linux" }}
+.local/bin/go-cache-maintenance
+.config/systemd/user/go-cache-maintenance.service
+.config/systemd/user/go-cache-maintenance.timer
+{{ end }}

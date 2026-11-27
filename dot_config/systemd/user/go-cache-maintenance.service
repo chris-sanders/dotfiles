@@ -1,0 +1,10 @@
+[Unit]
+Description=Maintain the user Go build cache
+
+[Service]
+Type=oneshot
+EnvironmentFile=-%h/.config/go-cache-maintenance.env
+ExecStart=/usr/bin/python3 %h/.local/bin/go-cache-maintenance
+Nice=10
+IOSchedulingClass=idle
+NoNewPrivileges=yes
